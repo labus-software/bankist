@@ -204,19 +204,45 @@ nav.addEventListener('mouseout', (e) => fadeHandler(e, 1));
 // STICKY NAVIGATION
 
 // get initial coordinates with getBoundingClientRect
-const initialCoords = section1.getBoundingClientRect();
-console.log(initialCoords)
+// const initialCoords = section1.getBoundingClientRect();
 
-// scroll function is also available on window object
-// not efficent, usually it should be avoided, fires events all the time
-// bad for performance
-// this is one way of doing it
-window.addEventListener('scroll', () => {
-  window.scrollY > initialCoords.top ? nav.classList.add('sticky') : nav.classList.remove('sticky')
-});
+// // scroll function is also available on window object
+// // not efficent, usually it should be avoided, fires events all the time
+// // bad for performance
+// // this is one way of doing it
+// window.addEventListener('scroll', () => {
+//   window.scrollY > initialCoords.top ? nav.classList.add('sticky') : nav.classList.remove('sticky');
+// });
 
 ///// Here is the other, modern way: INTERSECTION OBSERVER API
 
+// const obsCallback = (entries, observer) => {
+//   // entries are array of threshold entries 
+//   entries.forEach(entry => console.log(entry))
+// }
+// const obsOptions = {
+//   root:null, // target element we want to intersect, null (target el observes entire viewport)
+//   threshold:[ 0, 0.24 ]// % of intersection in which observer callback will be called
+//   // threshold is percentage that we want to be visible in our root, if it is less than 10%
+//   // it's no longer intersecting
+// };
+
+// const observer = new IntersectionObserver(obsCallback, obsOptions); // create observer
+// observer.observe(section1); // method to start observing
+
+const navHeight = nav.getBoundingClientRect().height;
+
+function stickyNav(entries){
+  const [entry] = entries;
+  !entry.isIntersecting ? nav.classList.add('sticky') :  nav.classList.remove('sticky'); 
+}
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null, // because we are intreset in entire viewport
+  threshold: 0, // if 0 percent of HEADER is visible, something will happen
+  rootMargin: `-${navHeight}px` // specify kind of margin when to intersect, only px unit works 
+})
+headerObserver.observe(header);
 
 // const h1 = document.querySelector('h1');
 
