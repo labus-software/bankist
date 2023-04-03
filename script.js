@@ -93,14 +93,14 @@ document.documentElement.style.setProperty('--color-primary', '#ce1141');
 
 const logo = document.querySelector('.nav__logo');
 
-console.log(logo.src); //absolute path
-console.log(logo.getAttribute('src')); //img relative path
+// console.log(logo.src); //absolute path
+// console.log(logo.getAttribute('src')); //img relative path
 logo.setAttribute('company', 'Bifrost'); 
-console.log(logo.getAttribute('company'))//company attr value
+// console.log(logo.getAttribute('company'))//company attr value
 
 //Data attributes
 
-console.log(logo.dataset.versionProx); //dataset no
+// console.log(logo.dataset.versionProx); //dataset no
 
 //Classes
 
@@ -117,15 +117,15 @@ const section1 = document
 btnScrollTo.addEventListener('click',
 (e) => {
   const s1coords = section1.getBoundingClientRect();
-  console.log(s1coords);
-  console.log(e.target.getBoundingClientRect());
+  // console.log(s1coords);
+  // console.log(e.target.getBoundingClientRect());
 
-  console.log('current scroll x/y ',
-  window.pageXOffset, window.pageYOffset);
+  // console.log('current scroll x/y ',
+ // window.pageXOffset, window.pageYOffset);
 
-  console.log('height/width viewport ', 
-  document.documentElement.clientHeight,
-  document.documentElement.clientWidth);
+  // console.log('height/width viewport ', 
+  // document.documentElement.clientHeight,
+  // document.documentElement.clientWidth);
 
   //Scrooling
 
@@ -173,6 +173,51 @@ tabsContainer.addEventListener('click', (e) => {
   document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations__content--active'); //activate
 });
 
+
+// MENU FADE ANIMATION
+
+const nav = document.querySelector('.nav');
+
+function fadeHandler(e, opacity){
+  if(e.target.classList.contains('nav__link')){
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    
+    const logo = link.closest('.nav').querySelector('img');
+    
+    siblings.forEach(el => {
+      if(el !== link) el.style.opacity = opacity;
+    })
+    
+    logo.style.opacity = opacity;
+  }
+}
+
+// Passing argument can also be done with bind method
+// fadeHandler.bind(opacity-value)
+// as callback f use like:: fadeHandler(0.5)
+
+nav.addEventListener('mouseover', (e) => fadeHandler(e, 0.5));
+nav.addEventListener('mouseout', (e) => fadeHandler(e, 1));
+
+
+// STICKY NAVIGATION
+
+// get initial coordinates with getBoundingClientRect
+const initialCoords = section1.getBoundingClientRect();
+console.log(initialCoords)
+
+// scroll function is also available on window object
+// not efficent, usually it should be avoided, fires events all the time
+// bad for performance
+// this is one way of doing it
+window.addEventListener('scroll', () => {
+  window.scrollY > initialCoords.top ? nav.classList.add('sticky') : nav.classList.remove('sticky')
+});
+
+///// Here is the other, modern way: INTERSECTION OBSERVER API
+
+
 // const h1 = document.querySelector('h1');
 
 // h1.addEventListener('click', ()=>{
@@ -214,7 +259,7 @@ tabsContainer.addEventListener('click', (e) => {
 // })
 
 // going downwards: CHILD
-const h1 = document.querySelector('h1');
+ const h1 = document.querySelector('h1');
 
 // console.log(h1.querySelectorAll('.highlight'));
 // console.log(h1.childNodes);
@@ -231,24 +276,24 @@ const h1 = document.querySelector('h1');
 
 // console.log(h1.children);
 
-h1.firstElementChild.style.color = 'orangered';
-h1.lastElementChild.style.color = 'cornflowerblue';
+ h1.firstElementChild.style.color = 'orangered';
+ h1.lastElementChild.style.color = 'cornflowerblue';
 
 // going upwards: PARENT
 
-console.log(h1.parentNode)
-console.log(h1.parentElement)
+// console.log(h1.parentNode)
+// console.log(h1.parentElement)
 
 // parent NODE and parent ELEMENT return same thing
 // parent
 // use closest method 
 
 h1.closest('.header').style.backgroundColor = 
-'var(--color-secondary)';
+'var(--color-primary-opacity)';
 
 // going SIDEWAYS : SIBLINGS
 
-console.log(h1.previousElementSibling)
+// console.log(h1.previousElementSibling)
 h1.nextElementSibling.style.backgroundColor = 'teal';
 h1.nextElementSibling.style.color = '#fff';
 h1.nextElementSibling.style.padding = '20px';
