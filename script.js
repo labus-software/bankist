@@ -214,8 +214,10 @@ nav.addEventListener('mouseout', (e) => fadeHandler(e, 1));
 //   window.scrollY > initialCoords.top ? nav.classList.add('sticky') : nav.classList.remove('sticky');
 // });
 
+//////////////////////////////////////////////////////////////
 ///// Here is the other, modern way: INTERSECTION OBSERVER API
 
+/////////////////////////
 // const obsCallback = (entries, observer) => {
 //   // entries are array of threshold entries 
 //   entries.forEach(entry => console.log(entry))
@@ -229,6 +231,11 @@ nav.addEventListener('mouseout', (e) => fadeHandler(e, 1));
 
 // const observer = new IntersectionObserver(obsCallback, obsOptions); // create observer
 // observer.observe(section1); // method to start observing
+/////////////////////
+
+////////////////
+// STICKY NAV OBSERVER
+//////////////////////
 
 const navHeight = nav.getBoundingClientRect().height;
 
@@ -243,6 +250,70 @@ const headerObserver = new IntersectionObserver(stickyNav, {
   rootMargin: `-${navHeight}px` // specify kind of margin when to intersect, only px unit works 
 })
 headerObserver.observe(header);
+
+/////////////////////
+// REVEAL SECTIONS
+////////////////////////
+
+// logic of observer
+const revealSection = function(entries, observer){
+  const [entry] = entries;
+  if(!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target)
+}
+
+// this is setup of observer
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15
+});
+
+allSections.forEach(section => {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+})
+
+/////////////////////////////////
+//////// LAZY LOADING IMAGES
+////////////////////////////////
+
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+// console.log(imgTargets)
+
+function loadImg(entries, observer){
+  const [entry] = entries;
+  if(!entry.isIntersecting) return;
+
+  // REPLACE SRC WITH DATA-SRC (smalll image with image full capacity)
+
+  entry.target.src = entry.target.dataset.src;
+  entry.target.addEventListener('load', function(){
+    entry.target.classList.remove('lazy-img');
+  })
+  observer.unobserve(entry.target); // for performance, turn off observer
+}
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold:0,
+  rootMargin: '200px'
+})
+
+imgTargets.forEach(img => imgObserver.observe(img));
+
+///////////////////////////////
+
+///////////////////////////////
+// SLIDER ///////////
+//////////////////////////////
+
+const slides = document.querySelectorAll('.slide');
+const btnLeftSlider = document.querySelector('.slider__btn--left');
+const btnRightSlider = document.querySelector('.slider__btn--right');
+
+
 
 // const h1 = document.querySelector('h1');
 
